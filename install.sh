@@ -1,7 +1,7 @@
 #!/bin/sh
 
 # # Clone dotfiles repo (used if running install remotely)
-# DOTFILES=~/dotfiles
+REPO_LOCATION=~/dotfiles
 #
 # if [ ! -d "$DOTFILES" ]; then
 #   env git clone https://github.com/paulpjryan/dotfiles.git $DOTFILES || {
@@ -11,6 +11,7 @@
 # fi
 
 # Install oh my zsh
+echo "Installing oh my zsh"
 if [ ! -n "$ZSH" ]; then
   hijack_env() {
     if [[ "$1" != "zsh" ]]; then
@@ -22,26 +23,32 @@ if [ ! -n "$ZSH" ]; then
   curl https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh -so - | sh
   unalias env
 fi
+echo "oh my zsh installed"
 
 # Install Spaceship zsh theme
+echo "Installing spaceship zsh theme"
 ZSH_CUSTOM=~/.oh-my-zsh/custom
 git clone https://github.com/denysdovhan/spaceship-prompt.git "$ZSH_CUSTOM/themes/spaceship-prompt"
 ln -s "$ZSH_CUSTOM/themes/spaceship-prompt/spaceship.zsh-theme" "$ZSH_CUSTOM/themes/spaceship.zsh-theme" > /dev/null
+echo "spaceship zsh theme installed"
 
 # Install zsh autosuggestions
+echo "Installing zsh autosuggestions"
 git clone https://github.com/zsh-users/zsh-autosuggestions "$ZSH_CUSTOM/plugins/zsh-autosuggestions"
+echo "zsh autosuggestions installed"
 
 # Install powerline fonts
+echo "Installing Powerline fonts"
 TMP_POWERLINE_FONTS=tmp-install-fonts
 env git clone --depth=1 https://github.com/powerline/fonts.git $TMP_POWERLINE_FONTS
 cd $TMP_POWERLINE_FONTS
 sh ./install.sh
 cd ..
 rm -rf $TMP_POWERLINE_FONTS
-echo "Powerline fonts installed."
+echo "Powerline fonts installed"
 
-echo "Symlinking dotfiles."
-for i in `find ~/dotfiles/dotfiles/* -maxdepth 1`; do
+echo "Symlinking dotfiles"
+for i in `find $REPO_LOCATION/dotfiles/* -maxdepth 1`; do
   original_file=`basename $i`
 
   if [[ "$original_file" != "dotfiles" ]]; then
@@ -49,5 +56,7 @@ for i in `find ~/dotfiles/dotfiles/* -maxdepth 1`; do
   fi
 done
 
-ln -snfv ~/.dotfiles/custom.zsh $ZSH_CUSTOM/custom.zsh > /dev/null
+ln -snfv $REPO_LOCATION/dotfiles/custom.zsh $ZSH_CUSTOM/custom.zsh > /dev/null
+echo "dotfiles symlinked"
+
 env zsh
