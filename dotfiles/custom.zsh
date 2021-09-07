@@ -22,4 +22,4 @@ SPACESHIP_GIT_STATUS_SHOW=false
 
 eval $(thefuck --alias)
 
-source ~/.dotfiles/aliases.zsh
+source ~/.aliases.zsh
