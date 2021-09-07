@@ -1,6 +1,8 @@
 #!/bin/sh
 
 # # Clone dotfiles repo (used if running install remotely)
+# DOTFILES=~/dotfiles
+#
 # if [ ! -d "$DOTFILES" ]; then
 #   env git clone https://github.com/paulpjryan/dotfiles.git $DOTFILES || {
 #     echo "Error: git clone of dotfiles repo failed"
@@ -39,7 +41,7 @@ rm -rf $TMP_POWERLINE_FONTS
 echo "Powerline fonts installed."
 
 echo "Symlinking dotfiles."
-for i in `find ~/.dotfiles/dotfiles/* -maxdepth 1`; do
+for i in `find ~/dotfiles/dotfiles/* -maxdepth 1`; do
   original_file=`basename $i`
 
   if [[ "$original_file" != "dotfiles" ]]; then
