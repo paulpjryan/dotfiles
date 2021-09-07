@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 # # Clone dotfiles repo (used if running install remotely)
 REPO_LOCATION=~/dotfiles
