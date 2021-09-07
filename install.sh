@@ -1,8 +1,8 @@
 #!/bin/bash
 
-# # Clone dotfiles repo (used if running install remotely)
+# Clone dotfiles repo (used if running install remotely)
 REPO_LOCATION=~/dotfiles
-#
+
 # if [ ! -d "$DOTFILES" ]; then
 #   env git clone https://github.com/paulpjryan/dotfiles.git $DOTFILES || {
 #     echo "Error: git clone of dotfiles repo failed"
@@ -38,14 +38,19 @@ git clone https://github.com/zsh-users/zsh-autosuggestions "$ZSH_CUSTOM/plugins/
 echo "zsh autosuggestions installed"
 
 # Install powerline fonts
-echo "Installing Powerline fonts"
-TMP_POWERLINE_FONTS=tmp-install-fonts
-env git clone --depth=1 https://github.com/powerline/fonts.git $TMP_POWERLINE_FONTS
-cd $TMP_POWERLINE_FONTS
-sh ./install.sh
-cd ..
-rm -rf $TMP_POWERLINE_FONTS
-echo "Powerline fonts installed"
+# echo "Do you want to install Powerline fonts? [Y/N]"
+# read choice
+# if [[ $choice = 'Y' ]] || [[ $choice = 'y' ]]; then
+#   TMP_POWERLINE_FONTS=tmp-install-fonts
+#   env git clone --depth=1 https://github.com/powerline/fonts.git $TMP_POWERLINE_FONTS
+#   cd $TMP_POWERLINE_FONTS
+#   sh ./install.sh
+#   cd ..
+#   rm -rf $TMP_POWERLINE_FONTS
+#   echo "Powerline fonts installed."
+# else
+#   echo "Powerline fonts skipped."
+# fi
 
 echo "Symlinking dotfiles"
 for i in `find $REPO_LOCATION/dotfiles/* -maxdepth 1`; do
