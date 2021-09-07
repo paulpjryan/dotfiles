@@ -1,12 +1,12 @@
 #!/bin/sh
 
-# Clone dotfiles repo
-if [ ! -d "$DOTFILES" ]; then
-  env git clone https://github.com/paulpjryan/dotfiles.git $DOTFILES || {
-    echo "Error: git clone of dotfiles repo failed"
-    exit 1
-  }
-fi
+# # Clone dotfiles repo (used if running install remotely)
+# if [ ! -d "$DOTFILES" ]; then
+#   env git clone https://github.com/paulpjryan/dotfiles.git $DOTFILES || {
+#     echo "Error: git clone of dotfiles repo failed"
+#     exit 1
+#   }
+# fi
 
 # Install oh my zsh
 if [ ! -n "$ZSH" ]; then
