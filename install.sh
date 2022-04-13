@@ -64,4 +64,8 @@ done
 ln -snfv $REPO_LOCATION/dotfiles/custom.zsh $ZSH_CUSTOM/custom.zsh > /dev/null
 echo "dotfiles symlinked"
 
+if [ -e $HOME/.ssh/environment ]; then
+    sed -i '/SHELL=.*/d' $HOME/.ssh/environment
+fi
+
 env zsh
