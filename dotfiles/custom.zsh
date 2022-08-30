@@ -20,6 +20,4 @@ SPACESHIP_DIR_TRUNC_REPO=false
 SPACESHIP_GIT_STATUS_COLOR=green
 SPACESHIP_GIT_STATUS_SHOW=false
 
-eval $(thefuck --alias)
-
 source ~/.aliases.zsh
