@@ -1,0 +1,5 @@
+# Copy to ~/.gitconfig.local and set the identity for THIS machine.
+# Gitignored — keeps your name and email off the public repo.
+[user]
+	name = Your Name
+	email = you@example.com

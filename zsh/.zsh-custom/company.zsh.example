@@ -1,0 +1,13 @@
+# Work-only overlay. Copy to company.zsh (gitignored) on a work machine.
+# Holds employer-specific aliases, paths, and tokens that must NOT live in this
+# public repo. Any *.zsh in ~/.zsh-custom is auto-loaded by oh-my-zsh.
+
+### Directory Hashes ###
+# hash -d work=$HOME/path/to/work/repo
+
+### Aliases ###
+# alias deploy="..."
+
+### Work secrets ###
+# export COMPANY_REGISTRY_USER=""
+# export COMPANY_REGISTRY_TOKEN=""

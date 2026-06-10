@@ -1,0 +1,6 @@
+[push]
+	autoSetupRemote = true
+# Machine/context-specific identity (name, email, signing keys) lives here and is
+# gitignored. Created from git/.gitconfig.local.example by bootstrap.sh.
+[include]
+	path = ~/.gitconfig.local

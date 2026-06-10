@@ -1,0 +1,7 @@
+# Local / secret overlays — never commit these.
+zsh/.zsh-custom/secrets.zsh
+zsh/.zsh-custom/company.zsh
+git/.gitconfig.local
+Brewfile.work
+
+.DS_Store

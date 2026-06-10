@@ -1,0 +1,28 @@
+# Work-only packages. Copy to Brewfile.work (gitignored) on a work machine and
+# keep only what that company/project actually needs. bootstrap.sh runs
+# `brew bundle` on Brewfile.work only if it exists.
+#
+# Everything below is an EXAMPLE of the kind of thing that belongs here rather
+# than in the general Brewfile — trim freely.
+
+# languages / runtimes
+brew "go"
+brew "ruby-install"
+brew "chruby"
+
+# databases / services
+brew "mysql@8.0"
+brew "docker-compose"
+cask "docker-desktop"
+
+# build / media tooling
+brew "watchman"
+brew "imagemagick"
+
+# cloud / kubernetes infra
+brew "awscli"
+brew "kubernetes-cli"
+brew "kustomize"
+cask "session-manager-plugin"
+
+# NOTE: tools installed via an internal installer (not Homebrew) go here as comments.
