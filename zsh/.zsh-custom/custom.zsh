@@ -30,11 +30,21 @@ function prune() {
   git branch -vv | grep ': gone]' | awk '{print $1}' | xargs git branch -D
 }
 
+function colorize() {
+  local color=$1
+  shift
+  print -Pn "%F{$color}"
+  "$@"
+  local exit_code=$?
+  print -Pn "%f"
+  return $exit_code
+}
+
 function rprune() {
   for d in *(/); do
     (
       cd "$d" || exit
-      pwd && prune
+      colorize blue pwd && prune
     )
   done
 }
@@ -43,7 +53,7 @@ function mgit() {
   for d in *(/); do
     (
       cd "$d" || exit
-      pwd && git $@
+      colorize blue pwd && git $@
     )
   done
 }
