@@ -41,15 +41,20 @@ function colorize() {
 }
 
 function meach() {
+  local cmd="${(j: :)@}"      # join args into one string
+  cmd="${cmd// + / && }"      # translate ' + ' into ' && '
   for d in *(/); do
     (
       cd "$d" || exit
-      colorize 13 pwd && eval "$@"
+      colorize 13 pwd && eval "$cmd"
     )
   done
 }
 
-function mgit() { meach "git $*"; }
+function mgit() {
+  local joined="${(j: :)@}"          # "checkout main + pull"
+  meach "git ${joined// + / + git }" # prefix git onto each + segment
+}
 
 function rprune() { meach prune; }
 
