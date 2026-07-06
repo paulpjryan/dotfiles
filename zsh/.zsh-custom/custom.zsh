@@ -40,23 +40,20 @@ function colorize() {
   return $exit_code
 }
 
-function rprune() {
+function meach() {
   for d in *(/); do
     (
       cd "$d" || exit
-      colorize blue pwd && prune
+      colorize 13 pwd && eval "$@"
     )
   done
 }
 
-function mgit() {
-  for d in *(/); do
-    (
-      cd "$d" || exit
-      colorize blue pwd && git $@
-    )
-  done
-}
+function mgit() { meach "git $*"; }
+
+function rprune() { meach prune; }
+
+function rmain() { meach 'git checkout "$(git_main_branch)" && git pull'; }
 
 ### Git Aliases ###
 alias rebase="git pull origin main --rebase"
