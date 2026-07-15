@@ -26,11 +26,23 @@ alias reload="source ~/.zshrc"
 
 ### Git Functions ###
 function prune() {
+  if [[ $1 == (-h|--help) ]]; then
+    print -l -- \
+      'usage: prune' \
+      '  fetch --prune, then delete local branches whose upstream is gone'
+    return 0
+  fi
   git fetch --prune
   git branch -vv | grep ': gone]' | awk '{print $1}' | xargs git branch -D
 }
 
 function colorize() {
+  if [[ $1 == (-h|--help) ]]; then
+    print -l -- \
+      'usage: colorize <color> <command> [args…]' \
+      '  run <command>, wrapping its output in the given zsh prompt color'
+    return 0
+  fi
   local color=$1
   shift
   print -Pn "%F{$color}"
@@ -54,6 +66,13 @@ function _meach_split() {
 }
 
 function meach() {
+  if [[ $1 == (-h|--help) ]]; then
+    print -l -- \
+      'usage: meach <command> [-- repo…]' \
+      '  run <command> in each subdirectory (default) or only the named ones' \
+      "  chain steps with ' + ' (becomes ' && '), e.g. meach pwd + ls -- dirA"
+    return 0
+  fi
   local -a reply MEACH_DIRS
   _meach_split "$@"
   local cmd="${(j: :)reply}"  # join command words into one string
@@ -69,6 +88,13 @@ function meach() {
 }
 
 function mgit() {
+  if [[ $1 == (-h|--help) ]]; then
+    print -l -- \
+      'usage: mgit <git args> [-- repo…]' \
+      "  run 'git <git args>' in each repo (default) or only the named ones" \
+      "  chain steps with ' + ', e.g. mgit checkout main + pull -- repoA"
+    return 0
+  fi
   local -a reply MEACH_DIRS extra
   _meach_split "$@"                     # reply = git words, MEACH_DIRS = repos
   local joined="${(j: :)reply}"         # "checkout main + pull"
@@ -77,11 +103,23 @@ function mgit() {
 }
 
 function rprune() {
+  if [[ $1 == (-h|--help) ]]; then
+    print -l -- \
+      'usage: rprune [repo…]' \
+      '  delete local branches whose upstream is gone, in each repo or only the named ones'
+    return 0
+  fi
   local -a extra; (( $# )) && extra=(-- "$@")
   meach prune "${extra[@]}"
 }
 
 function rmain() {
+  if [[ $1 == (-h|--help) ]]; then
+    print -l -- \
+      'usage: rmain [repo…]' \
+      '  check out the main branch and pull in each repo (default) or only the named ones'
+    return 0
+  fi
   local -a extra; (( $# )) && extra=(-- "$@")  # no args → all repos; else only these
   meach 'git checkout "$(git_main_branch)" && git pull' "${extra[@]}"
 }
