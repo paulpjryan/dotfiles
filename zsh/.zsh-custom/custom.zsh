@@ -40,10 +40,27 @@ function colorize() {
   return $exit_code
 }
 
+# Split ARGS at the first '--': words before it are the command (returned in
+# `reply`); words after it are the repo restriction (returned in MEACH_DIRS).
+# With no '--', every word is command and no restriction is set.
+function _meach_split() {
+  reply=(); MEACH_DIRS=()
+  local after=0 a
+  for a in "$@"; do
+    if (( after )); then MEACH_DIRS+=("$a")
+    elif [[ $a == -- ]]; then after=1
+    else reply+=("$a"); fi
+  done
+}
+
 function meach() {
-  local cmd="${(j: :)@}"      # join args into one string
+  local -a reply MEACH_DIRS
+  _meach_split "$@"
+  local cmd="${(j: :)reply}"  # join command words into one string
   cmd="${cmd// + / && }"      # translate ' + ' into ' && '
-  for d in *(/); do
+  local dirs=(*(/))           # default: every subdirectory
+  (( ${#MEACH_DIRS} )) && dirs=("${MEACH_DIRS[@]}")  # '-- repo…' restricts the set
+  for d in $dirs; do
     (
       cd "$d" || exit
       colorize 13 pwd && eval "$cmd"
@@ -52,13 +69,38 @@ function meach() {
 }
 
 function mgit() {
-  local joined="${(j: :)@}"          # "checkout main + pull"
-  meach "git ${joined// + / + git }" # prefix git onto each + segment
+  local -a reply MEACH_DIRS extra
+  _meach_split "$@"                     # reply = git words, MEACH_DIRS = repos
+  local joined="${(j: :)reply}"         # "checkout main + pull"
+  (( ${#MEACH_DIRS} )) && extra=(-- "${MEACH_DIRS[@]}")
+  meach "git ${joined// + / + git }" "${extra[@]}"  # prefix git onto each + segment
 }
 
-function rprune() { meach prune; }
+function rprune() {
+  local -a extra; (( $# )) && extra=(-- "$@")
+  meach prune "${extra[@]}"
+}
 
-function rmain() { meach 'git checkout "$(git_main_branch)" && git pull'; }
+function rmain() {
+  local -a extra; (( $# )) && extra=(-- "$@")  # no args → all repos; else only these
+  meach 'git checkout "$(git_main_branch)" && git pull' "${extra[@]}"
+}
+
+# Repo-name generators: git repos (subdirs holding a .git) vs. any subdir.
+function _meach_git_repos() { compadd -- */.git(N:h); }
+function _meach_all_dirs()  { compadd -- *(/N:t); }
+
+# rmain/rprune take repos positionally; mgit/meach take them only after a '--'.
+function _meach_after_sep() {          # $1 = generator to use once past '--'
+  local sep=${words[(I)--]}           # index of last '--', 0 if none
+  if (( sep > 0 && sep < CURRENT )); then $1; else _default; fi
+}
+function _mgit_comp()  { _meach_after_sep _meach_git_repos; }
+function _meach_comp() { _meach_after_sep _meach_all_dirs; }
+
+compdef _meach_git_repos rmain rprune  # git repos only
+compdef _mgit_comp mgit                # git repos, after '--'
+compdef _meach_comp meach              # any subdir, after '--'
 
 ### Git Aliases ###
 alias rebase="git pull origin main --rebase"
