@@ -33,7 +33,14 @@ function prune() {
       '  skips the current branch and branches checked out in a worktree'
     return 0
   fi
-  git fetch --prune
+  # fetch prints one line per stale remote-tracking ref; the monolith drops
+  # thousands at once, which reads as if local branches were deleted.
+  print -n 'fetching… '
+  local fetched; fetched=$(git fetch --prune 2>&1); local exit_code=$?
+  if (( exit_code )); then
+    print; print -u2 -- $fetched; return $exit_code
+  fi
+  print "pruned $(print -r -- $fetched | grep -c '\[deleted\]') stale remote-tracking refs"
 
   # '*' marks the current branch and '+' one checked out in a worktree; neither
   # can be deleted, and the marker would otherwise be read as the branch name.
