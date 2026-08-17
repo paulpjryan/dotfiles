@@ -29,11 +29,22 @@ function prune() {
   if [[ $1 == (-h|--help) ]]; then
     print -l -- \
       'usage: prune' \
-      '  fetch --prune, then delete local branches whose upstream is gone'
+      '  fetch --prune, then delete local branches whose upstream is gone' \
+      '  skips the current branch and branches checked out in a worktree'
     return 0
   fi
   git fetch --prune
-  git branch -vv | grep ': gone]' | awk '{print $1}' | xargs git branch -D
+
+  # '*' marks the current branch and '+' one checked out in a worktree; neither
+  # can be deleted, and the marker would otherwise be read as the branch name.
+  local listing=$(git branch -vv)
+  local -a gone skipped
+  gone=(${(f)"$(print -r -- $listing | awk '/: gone\]/ && $1 != "*" && $1 != "+" {print $1}')"})
+  skipped=(${(f)"$(print -r -- $listing | awk '/: gone\]/ && ($1 == "*" || $1 == "+") {print $2}')"})
+
+  (( ${#skipped} )) && print -u2 "skipping checked-out branch: ${(j:, :)skipped}"
+  (( ${#gone} )) || { print 'nothing to prune'; return 0 }
+  git branch -D "${gone[@]}"
 }
 
 function colorize() {
