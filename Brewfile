@@ -4,5 +4,6 @@
 # tooling are project/company decisions — put those in Brewfile.work.
 
 brew "stow"   # dotfiles management
+brew "git"    # arm64-native; /usr/bin/git's xcrun shim breaks under Rosetta
 brew "gh"     # github cli
 brew "rsync"
